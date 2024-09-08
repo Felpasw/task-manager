@@ -55,7 +55,7 @@
                 text-white 
                 shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
                 onclick="openCreateModal()">
-                    <img src="{% static 'send-solid.png' %}" class="w-[30%]" />    
+                    <img src="{% static 'list-plus.png' %}" class="w-[30%]" />    
                     Novo
                 </button>
                 {% if user.is_superuser %}
@@ -86,7 +86,7 @@
                 </a>
             </div>
 
-            <div class="flex flex-wrap">
+            <div class="sm:grid sm:grid-cols-3 flex flex-col w-full gap-3">
                 {% for task in tasks %}
                 <div class="flex md:w-full cursor-pointer hover:scale-105 transition-all duration-300 flex-col bg-white border border-gray-200 rounded-lg shadow md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 m-5"
                      onclick="openEditModal('{{ task.id }}', '{{ task.title|escapejs }}', '{{ task.description|escapejs }}', '{{ task.status|escapejs }}', '{{ task.assigned_to.id|default:'' }}')">
@@ -189,7 +189,7 @@
 
 
       <!-- Modal de Adição de Usuário -->
-      <div id="addUserModal" class="fixed inset-0 flex items-center justify-center hidden">
+      <div id="addUserModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h2 class="text-xl font-bold mb-4">Adicionar Novo Usuário</h2>
             <form method="post" action="{% url 'add_user' %}">
