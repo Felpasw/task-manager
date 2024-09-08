@@ -1,3 +1,3 @@
 GRUPO: 
-  Felipe Cavalcante Lacerda
+  Felipe Cavalcante Lacerda <br/>
   Pedro Henrique Mazzeu Sá
