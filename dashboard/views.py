@@ -17,7 +17,7 @@ import json
 
 def logoutUser(request):
     logout(request)
-    return redirect('/accounts/login')  
+    return redirect('/login')  
 
 
 @login_required
@@ -102,3 +102,22 @@ def delete_task(request):
             messages.error(request, 'Tarefa não encontrada!')
 
     return redirect('index')
+
+@login_required
+def add_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.create_user(username=username, email=email, password=password)
+            messages.success(request, 'Usuário adicionado com sucesso!')
+            # Optionally log in the new user automatically
+            login(request, user)
+        except Exception as e:
+            messages.error(request, f'Erro ao adicionar usuário: {str(e)}')
+
+    return redirect('index')
+
+
