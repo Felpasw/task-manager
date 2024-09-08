@@ -1,0 +1,88 @@
+{# por algum motivo, quando não tem texto no input, não aparece a borda de cima #}
+
+{% include "registration/_loginLayout.html" %}
+
+{% block title %}
+<title>Login</title>
+{% endblock title %}
+
+{% block content %}
+
+
+<form method="post" action="{% url 'login' %}" class="w-full  flex flex-col w-full h-full p-24 gap-7 items-center bg-[#34969c] justify-center">
+    {% csrf_token %}
+        
+    {% load static %}
+    <img src="{% static 'task.png' %}" class="min-[350px]:w-[80%] min-[500px]:w-[70%] min-[570px]:w-[60%] sm:w-[50%] md:w-[40%] min-[950px]:w-[30%] xl:w-[16%] w-[100%]" />
+    {% if form.errors %}
+        <p class="text-red-600">Usuário ou senha incorretos! Tente novamente.</p>
+    {% endif %}
+        <div class="w-72">
+            <div class="relative w-full min-w-[200px] h-10 flex flex-col justify-center items-center">
+                <input type="{{ form.username.field.widget.input_type }}"
+                name="{{ form.username.name }}"
+                id="{{ form.username.id_for_label }}"
+                class="peer w-[80%] min-[350px]:w-full h-full bg-transparent text-blue-black-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-black-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-black-200 placeholder-shown:border-t-white border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-black-200 focus:border-black-900"
+
+                placeholder= ""
+                {% if form.username.field.required %}
+                    required
+                {% endif %}
+                >
+                <label for="{{ form.username.id_for_label }}" class="flex w-[80%] min-[350px]:w-full h-full select-none pointer-events-none absolute font-normal border-t-white !overflow-visible truncate peer-placeholder-shown:text-blue-black-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-black-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[11px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-black-500 peer-focus:text-black-900 before:border-blue-black-200 peer-focus:before:!border-black-900 after:border-blue-black-200 peer-focus:after:!border-black-900">
+                    {{ form.username.label }}
+                
+                </label>
+            </div> 
+        </div> 
+        <div class="w-72 ">
+            <div class="relative w-full min-w-[200px] h-10 flex flex-col justify-center items-center">
+                <input type="{{ form.password.field.widget.input_type }}"
+                name="{{ form.password.name }}"
+                id="{{ form.password.id_for_label }}"
+                class="peer w-[80%] min-[350px]:w-full h-full  bg-transparent text-blue-black-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-black-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-black-200 placeholder-shown:border-t-white border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-black-200 focus:border-black-900"
+                placeholder= ""
+
+                {% if form.password.field.required %}required{% endif %}>
+                <label for="{{ form.password.id_for_label }}" class="flex w-[80%] min-[350px]:w-full h-full select-none pointer-events-none absolute font-normal !overflow-visible truncate peer-placeholder-shown:text-blue-black-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-black-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[11px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-black-500 peer-focus:text-black-900 before:border-blue-black-200 peer-focus:before:!border-black-900 after:border-blue-black-200 peer-focus:after:!border-black-900">
+                    {{ form.password.label }}
+                 
+                </label>
+           
+            </div>
+        </div>  
+    </div> 
+ 
+    
+    <button class="align-middle 
+    flex
+    gap-2
+    justify-center 
+    items-center
+    hover:scale-105 transition-all
+    select-none 
+    font-sans 
+    font-bold 
+    text-center 
+    sm:uppercase
+    uppercase
+    text-sm
+    transition-all 
+    disabled:opacity-50 
+    disabled:shadow-none 
+    disabled:pointer-events-none 
+    sm:text-xs py-3 
+    px-6 rounded-lg 
+    bg-gray-900 
+    text-white 
+    shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none  "> 
+    {% load static %}
+    <img src="{% static 'send-solid.png' %}" class="w-[30%]" />    
+    Enviar
+    </button>
+       
+    
+</form>
+
+
+{% endblock content %}

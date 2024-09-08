@@ -1,0 +1,67 @@
+:root {
+    --fc-page-bg-color:  black;
+    --fc-small-font-size: 30%;
+    --fc-medium-font-size: 70%;
+    --fc-border-color: black;
+    --fc-daygrid-event-dot-width: 5px;
+
+    --fc-button-active-border-color: #151e27;
+    --fc-button-text-color: #fff;
+    --fc-button-bg-color: rgb(17 24 39);
+    --fc-button-border-color: #2C3E50;
+    --fc-button-hover-bg-color: #1e2b37;
+    --fc-button-hover-border-color:  rgb(17 24 30) ;
+    --fc-button-active-bg-color: #1a252f;
+    --fc-button-active-border-color: #151e27;
+
+    --fc-daygrid-event-dot-width: 0px;
+
+
+    --fc-event-bg-color: #3788d8;
+    --fc-event-border-color: #3788d8;
+    --fc-event-text-color: #fff;
+    --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+  
+    --fc-more-link-bg-color: #d0d0d0;
+    --fc-more-link-text-color: inherit;
+  
+    --fc-event-resizer-thickness: 8px;
+    --fc-event-resizer-dot-total-width: 8px;
+    --fc-event-resizer-dot-border-width: 1px;
+  
+    --fc-non-business-color: rgba(215, 215, 215, 0.3);
+    --fc-bg-event-opacity: 0.3;
+    --fc-now-indicator-color: red;
+    --header-color: rgb(17, 24, 39);
+  }
+
+  thead {
+    background-color: var(--header-color);
+  }
+
+  .fc-col-header-cell {
+    background-color: var(--header-color);
+    color: #fff;
+    
+  }
+
+  .fc-day-grid-event > .fc-content {
+    overflow: hidden;
+ }
+
+  .fc-header-toolbar .fc-toolbar {
+    color:  red;
+  }
+
+  .sidebar {
+    /* Mantenha as outras propriedades CSS */
+    width: 0; /* Defina a largura inicial como 0 para escondê-la */
+    transition: width 0.3s ease; /* Adicione uma transição para a largura */
+}
+.sidebar.open {
+  width: 300px; /* Defina a largura desejada quando a barra lateral estiver aberta */
+}
+
+  .fc-daygrid-event {
+    font-size: var(--fc-medium-font-size);
+  }

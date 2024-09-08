@@ -1,0 +1,253 @@
+{% include "_layout.html" %}
+{% include "_header.html" %}
+{% block content %}
+
+{% block title %}
+<title>Home</title>
+{% endblock title %}
+
+<div>
+    <div class="w-full h-full min-h-[80vh]">
+        <div class="h-full m-5 flex flex-col justify-center items-center">
+            {% load static %}
+
+            <!-- Filtros e botão para criar nova tarefa -->
+            <div class="flex gap-4 mb-4">
+                {% if user.is_superuser %}
+                <!-- Filtro de Status -->
+                <select id="statusFilter" class="border border-gray-300 rounded-lg p-2" onchange="applyFilters()">
+                    <option value="">Todos os Status</option>
+                    <option value="Pendente" {% if request.GET.status == 'Pendente' %}selected{% endif %}>Pendente</option>
+                    <option value="Em andamento" {% if request.GET.status == 'Em andamento' %}selected{% endif %}>Em andamento</option>
+                    <option value="Concluída" {% if request.GET.status == 'Concluída' %}selected{% endif %}>Concluída</option>
+                </select>
+
+                <!-- Filtro de Usuários -->
+                <select id="userFilter" class="border border-gray-300 rounded-lg p-2" onchange="applyFilters()">
+                    <option value="">Todos os Usuários</option>
+                    {% for u in users %}
+                    <option value="{{ u.id }}" {% if request.GET.user == u.id|stringformat:"s" %}selected{% endif %}>{{ u.username }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+
+                <!-- Botão para abrir o modal de criação -->
+                <button class="align-middle 
+                flex
+                gap-2
+                justify-center 
+                items-center
+                hover:scale-105 transition-all
+                select-none 
+                font-sans 
+                font-bold 
+                text-center 
+                sm:uppercase
+                uppercase
+                text-sm
+                transition-all 
+                disabled:opacity-50 
+                disabled:shadow-none 
+                disabled:pointer-events-none 
+                sm:text-xs py-3 
+                px-6 rounded-lg 
+                bg-gray-900 
+                text-white 
+                shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+                onclick="openCreateModal()">
+                    <img src="{% static 'send-solid.png' %}" class="w-[30%]" />    
+                    Novo
+                </button>
+
+                <!-- Botão de Logout -->
+                <a href="{% url 'logout' %}" 
+                class="align-middle
+                flex
+                gap-2
+                justify-center 
+                items-center
+                hover:scale-105 transition-all
+                select-none 
+                font-sans 
+                font-bold 
+                text-center 
+                sm:uppercase
+                uppercase
+                text-sm
+                transition-all 
+                py-3 
+                px-6 rounded-lg 
+                bg-red-600 
+                text-white 
+                shadow-md shadow-red-600/10 hover:shadow-lg hover:shadow-red-600/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
+                    Logout
+                </a>
+            </div>
+
+            <div class="flex flex-wrap">
+                {% for task in tasks %}
+                <div class="flex md:w-full cursor-pointer hover:scale-105 transition-all duration-300 flex-col bg-white border border-gray-200 rounded-lg shadow md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 m-5"
+                     onclick="openEditModal('{{ task.id }}', '{{ task.title|escapejs }}', '{{ task.description|escapejs }}', '{{ task.status|escapejs }}', '{{ task.assigned_to.id|default:'' }}')">
+                    <img class="object-cover w-full rounded-t-lg h-96 md:h-auto p-[2px] md:rounded-none md:rounded-s-lg h-full max-w-[570px]" 
+                         src="{% static 'images.jpeg' %}" alt="">
+                    <div class="flex flex-col justify-between p-4 leading-normal">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ task.title }}</h5>
+                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                            {{ task.description }} <br/>
+                            <b>Atribuído a {{ task.assigned_to.username }}</b> - {{ task.status }}
+                        </p>
+                    </div>
+                    {% if user.is_superuser %}
+                    <div class="flex justify-end p-4">
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-lg" onclick="deleteTask('{{ task.id }}')">Excluir</button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Criar Tarefa -->
+    <div id="createModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 class="text-2xl font-bold mb-4">Criar Nova Tarefa</h2>
+            <form id="createForm" method="post" action="{% url 'create_task' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="new_title" class="block text-gray-700">Título</label>
+                    <input type="text" id="new_title" name="title" class="w-full border border-gray-300 rounded-lg p-2" />
+                </div>
+                <div class="mb-4">
+                    <label for="new_description" class="block text-gray-700">Descrição</label>
+                    <textarea id="new_description" name="description" class="w-full border border-gray-300 rounded-lg p-2"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="new_status" class="block text-gray-700">Status</label>
+                    <select id="new_status" name="status" class="w-full border border-gray-300 rounded-lg p-2">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em andamento">Em andamento</option>
+                        <option value="Concluída">Concluída</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="new_assigned_to" class="block text-gray-700">Atribuído a</label>
+                    <select id="new_assigned_to" name="assigned_to" class="w-full border border-gray-300 rounded-lg p-2">
+                        {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2" onclick="closeCreateModal()">Cancelar</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Tarefa -->
+    <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 class="text-2xl font-bold mb-4">Editar Tarefa</h2>
+            <form id="editForm" method="post" action="{% url 'update_task' %}">
+                {% csrf_token %}
+                <input type="hidden" id="taskId" name="task_id" />
+                <div class="mb-4">
+                    <label for="title" class="block text-gray-700">Título</label>
+                    <input type="text" id="title" name="title" class="w-full border border-gray-300 rounded-lg p-2" />
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="block text-gray-700">Descrição</label>
+                    <textarea id="description" name="description" class="w-full border border-gray-300 rounded-lg p-2"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="status" class="block text-gray-700">Status</label>
+                    <select id="status" name="status" class="w-full border border-gray-300 rounded-lg p-2">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em andamento">Em andamento</option>
+                        <option value="Concluída">Concluída</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="assigned_to" class="block text-gray-700">Atribuído a</label>
+                    <select id="assigned_to" name="assigned_to" class="w-full border border-gray-300 rounded-lg p-2">
+                        {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2" onclick="closeEditModal()">Cancelar</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% include "_footer.html" %}
+</div>
+
+<script>
+    function openCreateModal() {
+        document.getElementById('createModal').classList.remove('hidden');
+    }
+
+    function closeCreateModal() {
+        document.getElementById('createModal').classList.add('hidden');
+    }
+
+    function openEditModal(taskId, title, description, status, assignedToId) {
+        document.getElementById('taskId').value = taskId;
+        document.getElementById('title').value = title;
+        document.getElementById('description').value = description;
+        document.getElementById('status').value = status;
+        document.getElementById('assigned_to').value = assignedToId;
+        document.getElementById('editModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+    }
+
+    function deleteTask(taskId) {
+        if (confirm('Tem certeza de que deseja excluir esta tarefa?')) {
+            var form = document.createElement('form');
+            form.method = 'post';
+            form.action = '{% url "delete_task" %}';
+
+            var taskIdInput = document.createElement('input');
+            taskIdInput.type = 'hidden';
+            taskIdInput.name = 'task_id';
+            taskIdInput.value = taskId;
+            form.appendChild(taskIdInput);
+
+            var csrfTokenInput = document.createElement('input');
+            csrfTokenInput.type = 'hidden';
+            csrfTokenInput.name = 'csrfmiddlewaretoken';
+            csrfTokenInput.value = '{{ csrf_token }}';
+            form.appendChild(csrfTokenInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function applyFilters() {
+        var statusFilter = document.getElementById('statusFilter').value;
+        var userFilter = document.getElementById('userFilter').value;
+        var url = '{% url "index" %}?';
+
+        if (statusFilter) {
+            url += 'status=' + encodeURIComponent(statusFilter) + '&';
+        }
+
+        if (userFilter) {
+            url += 'user=' + encodeURIComponent(userFilter) + '&';
+        }
+
+        window.location.href = url;
+    }
+</script>
+
+{% endblock content %}

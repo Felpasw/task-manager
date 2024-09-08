@@ -1,0 +1,10 @@
+
+    <div class=" w-full bg-gray-900 p-4 ">
+        {% load static %}
+        <div class="flex w-full justify-end text-white items-center">
+            <img src="{% static 'task.png' %}" class="sm:w-[5%] w-[15%] float-right" />        
+            Task Manager
+        </div>
+        
+    </div>
+  {% block content %}{% endblock content %}
