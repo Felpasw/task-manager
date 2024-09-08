@@ -59,7 +59,29 @@
                     Novo
                 </button>
                 {% if user.is_superuser %}
-                <button onclick="openAddUserModal()" class="bg-green-500 text-white px-4 py-2 rounded-lg">Adicionar Usuário</button>
+                <button onclick="openAddUserModal()"
+                class="align-middle
+                       flex
+                       gap-2
+                       justify-center
+                       items-center
+                       hover:scale-105 transition-all
+                       select-none
+                       font-sans
+                       font-bold
+                       text-center
+                       sm:uppercase
+                       uppercase
+                       text-sm
+                       transition-all
+                       py-3
+                       px-6 rounded-lg
+                       bg-green-600
+                       text-white
+                       shadow-md shadow-green-600/10 hover:shadow-lg hover:shadow-green-600/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
+            <img src="{% static 'user-plus-solid.png' %}" class="w-[10%]" />
+            Adicionar Usuário
+        </button>
                 {% endif %}
                 <!-- Botão de Logout -->
                 <a href="{% url 'logout' %}" 
@@ -82,7 +104,8 @@
                 bg-red-600 
                 text-white 
                 shadow-md shadow-red-600/10 hover:shadow-lg hover:shadow-red-600/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
-                    Logout
+                <img src="{% static 'exit-solid.png' %}" class="w-[30%]" />     
+                Logout
                 </a>
             </div>
 
